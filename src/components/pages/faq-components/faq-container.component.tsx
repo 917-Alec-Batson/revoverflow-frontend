@@ -19,6 +19,7 @@ import { BreadcrumbBarComponent } from "../breadcrumb-bar.component";
 import { useHistory } from "react-router";
 import * as answerRemote from "../../../remotes/answer.remote";
 import * as questionRemote from "../../../remotes/question.remote";
+import ListAltIcon from '@material-ui/icons/ListAlt';
 import { Question } from "../../../models/question";
 import { IState } from "../../../reducers";
 import { connect } from "react-redux";
@@ -92,7 +93,7 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
 ) => {
   const classes = useStyles();
   const history = useHistory();
-  const [view, setView] = useState("revature");
+  const [view, setView] = useState("all");
   const [value, setValue] = useState(props.storeTab);
   const [open, setOpen] = useState<boolean>(false);
   const [faqTodisplay, setFAQs] = useState<Array<Faq>>();
@@ -140,7 +141,7 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
     let retrievedPageable: any;
     let tab: any;
     
-    if (currentView === "revature") {
+    if (currentView === "all") {
       retrievedPageable = await getAllFAQ();
       console.log(retrievedPageable)
       tab = 0;
@@ -148,8 +149,12 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
         setFAQs(retrievedPageable)
         return;
       }
-    } else if (currentView === "location") {
+    } 
+    else if (currentView === "revature") {
+      retrievedPageable = await getRevatureBasedFAQ();
       tab = 1;
+    }else if (currentView === "location") {
+      tab = 2;
     }
     setFAQs(retrievedPageable)
   };
@@ -201,11 +206,14 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
               scrollButtons="auto"
               onChange={handleChange}
             >
-              {/* <Tab icon={<BusinessIcon fontSize="large" />} label="Revature" className={classes.boxInternal}
-                                onClick={(e) => load("revature", 0)} />
-                            <Tab icon={<LocationOnIcon fontSize="large" />} label="Location" className={classes.boxInternal}
-                                onClick={(e) => load('location', 1)} /> */}
-
+              
+              <Tab
+                id="AllFAQTab"
+                icon={<ListAltIcon fontSize="large" />}
+                label="All FAQ"
+                className={classes.boxInternal}
+                onClick={(e) => setView("all")}
+              />
               <Tab
                 id="revatureTab"
                 icon={<BusinessIcon fontSize="large" />}
