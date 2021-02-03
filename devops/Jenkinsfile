@@ -30,6 +30,7 @@
                 branch "master"
             }
             steps{
+                sh "sudo chmod -R 755 ./build"
                 sh "docker image build -t rev-overflow-frontend:canada-latest ."
             }
         }
