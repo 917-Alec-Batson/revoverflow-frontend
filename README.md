@@ -45,25 +45,6 @@ RevOverflow is a site dedicated to providing support to technical problems encou
 - User, I should be able to view another users profile where I can see the questions and answers submitted by the other user.
 - Horizontal Scalability
 
-## Getting Started
-
-### Frontend
-- git clone https://github.com/917-Alec-Batson/revoverflow-frontend.git
-- Cd revoverflow-frontend
-- Npm install
-- Npm start 
-
-### Backend:
-- git clone https://github.com/917-Alec-Batson/revoverflow-backend.git
-- Open Spring Tool Suit 4 and follow the instructions to import project.
-- File > import > git > import from git (smart import) > Existing local > Add > Browse for revoverflow-backend folder > Finish > Next > Finish
-- If it doesn’t automatically download the maven resources, right click on the project and under ‘maven…’ click update project
-- If the project gives an error:
-    - right click the project in project explorer and select properties
-    - Select Java Compiler and click enable project specific settings
-    - Ensure compliance is set to java8
-
-
 ## Usage
 Our application utilizes a storefront API which communicates using RESTful conventions with our backend, which is hosted on AWS's (Amazon Web Services) EC2 servers. In turn - our backend utilizes Hibernate and STS (Spring Tool Suite) to communicate with a PostgreSQL RDS we also host on AWS.
 All this comes together in our frontend which is built using React. Our two distinct API's meet here and communicate through standard HTTP protocols. We encrypt all our users logins as well as ensure all endpoints are distinct and cannot be compromised.
@@ -101,4 +82,4 @@ All this comes together in our frontend which is built using React. Our two dist
 
 ## License
 
-The project is under the GNU General Public License
+The project is under the GNU [General Public License](https://github.com/917-Alec-Batson/revoverflow-frontend/blob/master/LICENSE)
