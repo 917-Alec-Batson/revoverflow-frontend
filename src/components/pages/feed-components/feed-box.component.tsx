@@ -16,8 +16,6 @@ import { convertFromRaw, EditorState, Editor } from 'draft-js';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { AddFAQComponent } from '../faq-components/add-faq-component';
 
-
-
 const drawerWidth = 100;
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -63,7 +61,7 @@ export const FeedBoxComponent: React.FC<FeedBoxComponentProps> = (props) => {
     const admin = localStorage.getItem("admin");
 
     const handleClose = () => {
-        setOpen(false)
+        setOpen(false);
     }
 
     /**
