@@ -22,7 +22,7 @@
         }
         stage("Build Code"){
             steps{
-                sh "REACT_APP_API_URL=http://34.204.205.63:10000 npm run build"
+                sh "REACT_APP_API_URL=http://ec2-34-204-205-63.compute-1.amazonaws.com:10000 npm run build"
             }
         }
         stage("Build Docker Image"){
