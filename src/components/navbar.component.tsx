@@ -9,34 +9,15 @@
  */
 
 import React, { useState, useEffect } from "react";
-import clsx from "clsx";
-import {
-  createStyles,
-  makeStyles,
-  useTheme,
-  Theme,
-} from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
-import LiveHelpIcon from "@material-ui/icons/LiveHelp";
 import { useHistory } from "react-router";
+import clsx from "clsx";
+import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
+import { AppBar, Toolbar } from "@material-ui/core";
+import { CssBaseline, Typography, IconButton } from "@material-ui/core";
 import { Menu, MenuItem, Box } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import * as loginRemote from '../remotes/login.remote'
-
+import firebase from "firebase/app";
 
 
 const drawerWidth = 240;
@@ -64,32 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
     menuButton: {
       marginRight: 36,
     },
-    hide: {
-      display: "none",
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-      whiteSpace: "nowrap",
-    },
-    drawerOpen: {
-      width: drawerWidth,
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
-    drawerClose: {
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9) + 1,
-      },
-    },
     toolbar: {
       display: "flex",
       alignItems: "center",
@@ -98,10 +53,6 @@ const useStyles = makeStyles((theme: Theme) =>
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
     orange: {
       color: "#F26925",
       fontSize: 40,
@@ -109,10 +60,10 @@ const useStyles = makeStyles((theme: Theme) =>
     pointsDisplay: {
       color: "#F26925",
       fontSize: 30,
-      paddingTop: 11
+      paddingTop: 11,
     },
     imageDoor: {
-      paddingBottom: 10
+      paddingBottom: 10,
     },
     arrangement: {
       display: "flex",
@@ -158,13 +109,17 @@ const useStyles = makeStyles((theme: Theme) =>
         width: "20ch",
       },
     },
+    logo: {
+      marginTop: "-1em",
+      position: "absolute",
+      cursor: "pointer",
+    },
   })
 );
 export const NavbarComponent: React.FC<any> = (props) => {
   const history = useHistory();
   const theme = useTheme();
   const classes = useStyles(props);
-  const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [
     mobileMoreAnchorEl,
@@ -172,12 +127,7 @@ export const NavbarComponent: React.FC<any> = (props) => {
   ] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -187,7 +137,13 @@ export const NavbarComponent: React.FC<any> = (props) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    localStorage.removeItem("accessToken");
+    firebase.auth().signOut().then(() => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("email");
+      localStorage.removeItem("points");
+    }).catch((error) => {
+      alert('Error Occured while trying to logout')
+    })
   };
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -200,7 +156,10 @@ export const NavbarComponent: React.FC<any> = (props) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => handleMenuClose()}> <Typography onClick={() => history.push("/")}> Log Out </Typography></MenuItem>
+      <MenuItem onClick={() => handleMenuClose()}>
+        {" "}
+        <Typography onClick={() => history.push("/")}> Log Out </Typography>
+      </MenuItem>
     </Menu>
   );
   const mobileMenuId = "primary-search-account-menu-mobile";
@@ -213,25 +172,24 @@ export const NavbarComponent: React.FC<any> = (props) => {
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
-    >
-    </Menu>
+    ></Menu>
   );
 
   const [points, setPoints] = useState<any>(0);
   const gettingPoints = localStorage.getItem("points");
 
+  //update components when point change
   useEffect(() => {
     displayPoints();
-  });
+  }, [points]);
 
   const displayPoints = async () => {
-
     if (gettingPoints) {
       try {
-      const response = await loginRemote.getUserById(+JSON.parse(JSON.stringify(localStorage.getItem('userId'))));
+        const response = await loginRemote.getUserById(localStorage.getItem('email'));
       localStorage.setItem('points', JSON.stringify(response.data.points));
       } catch {
-        alert('Couldnt retrieve points')
+        alert("Couldnt retrieve points");
       }
       setPoints(localStorage.getItem("points"));
     }
@@ -242,29 +200,19 @@ export const NavbarComponent: React.FC<any> = (props) => {
       <CssBaseline />
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={clsx(classes.appBar)}
       >
         <Toolbar className={classes.arrangement}>
           <Box className={classes.arrangementInternal}>
-            <IconButton
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, classes.orange, {
-                [classes.hide]: open,
-              })}
-            >
-              <MenuIcon fontSize="large" />
-            </IconButton>
             <Box className={classes.imageDoor}>
-              <img 
-                src={require("../logo/image.png")}
-                height={40}
-                width={100}
-                alt="pop"
-              />
+                <img
+                  className={classes.logo}
+                  onClick={() => {history.push("/feed")}}
+                  src={require("../logo/image.png")}
+                  height={40}
+                  width={100}
+                  alt="pop"
+                />
             </Box>
           </Box>
 
@@ -281,76 +229,13 @@ export const NavbarComponent: React.FC<any> = (props) => {
             </IconButton>
 
             <Typography className={classes.pointsDisplay} variant="h4" >
-              Points: {points}
+              Points: {points || 0}
             </Typography>
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-                <ChevronLeftIcon />
-              )}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          {["Feed"].map((text, index) => (
-            <ListItem
-              onClick={() => history.push("/feed")}
-              style={{ color: "#F26925" }}
-              button
-              key={text}
-            >
-              <ListItemIcon>
-                <LiveHelpIcon
-                  onClick={() => history.push("/feed")}
-                  style={{ color: "#F26925" }}
-                />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-          <Divider />
-          {["Post A Question"].map((text, index) => (
-            <ListItem
-              onClick={() => {
-                history.push("/question");
-              }}
-              style={{ color: "#F26925" }}
-              button
-              key={text}
-            >
-              <ListItemIcon>
-                <QuestionAnswerIcon
-                  onClick={() => {
-                    history.push("/question");
-                  }}
-                  style={{ color: "#F26925" }}
-                />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      {renderMobileMenu}
-      {renderMenu}
+        {renderMobileMenu}
+        {renderMenu}
     </div>
   );
 };

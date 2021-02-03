@@ -18,8 +18,7 @@ const useStyles = makeStyles({
     boxInternal: {
         marginBottom: 5,
         marginTop: 10,
-        borderBottomStyle: "solid",
-        borderLeftStyle: "solid",
+        borderStyle: "solid",
         borderColor: "#f26925",
         padding: 10,
         minWidth: 450
@@ -70,6 +69,8 @@ export const ForumQuestionComponent: React.FC<ForumQuestionComponentProps> = (pr
             creationDate: questionInfo.creationDate,
             editDate: null,
             status: true,
+            revatureQuestion: questionInfo.revatureQuestion,
+            locationID: questionInfo.locationID,
             userID: +JSON.parse(JSON.stringify(localStorage.getItem('userId')))
         };
 

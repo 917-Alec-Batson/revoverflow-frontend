@@ -7,10 +7,6 @@ import Axios from "axios";
 
 const server = process.env.REACT_APP_API_URL ?? "http://localhost:8080";
 
-export const internalAxios = Axios.create({
-    baseURL: server,
-});
-
 export const authAxios = Axios.create({
     baseURL: server,
     headers: {

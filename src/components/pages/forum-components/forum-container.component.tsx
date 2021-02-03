@@ -10,6 +10,7 @@ import { Answer } from '../../../models/answer';
 import { IState } from '../../../reducers';
 import { connect } from 'react-redux';
 import Pagination from '@material-ui/lab/Pagination';
+import protectComponent from '../../protected-route/UserAuthRoute'
 
 /**
  * @file Contains and manages questions, accepted answers, and general answers displayed in forums. 
@@ -155,4 +156,4 @@ const mapStateToProps = (state: IState) => {
 const mapDispatchToProps = {
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForumContainerComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(protectComponent(ForumContainerComponent));

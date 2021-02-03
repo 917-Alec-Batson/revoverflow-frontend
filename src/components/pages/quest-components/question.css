@@ -1,0 +1,9 @@
+.checkbox-unchecked {
+    color: #f26925;
+    margin: 30 30 30 30;
+    
+}
+.checkbox-checked {
+    color: gray;
+    margin: 30 30 30 30;
+}

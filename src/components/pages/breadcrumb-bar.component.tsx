@@ -37,18 +37,18 @@ export const BreadcrumbBarComponent: React.FC = (props) => {
     const history = useHistory();
     const pathname = (window.location.pathname).substring(1);
 
-    function refreshPage() {
-        window.location.reload(false);
-    }
+    // function refreshPage() {
+    //     window.location.reload(false);
+    // }
 
     function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
         history.push("/" + pathname);
-        refreshPage();
+        // refreshPage();
     }
 
     function handleClick2(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-        history.push("/feed")
-        refreshPage();
+        history.push("/feed");
+        // refreshPage();
     }
 
     return (

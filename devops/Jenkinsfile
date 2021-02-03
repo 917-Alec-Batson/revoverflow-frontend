@@ -1,0 +1,71 @@
+ pipeline{
+    agent{
+        label "master"
+    }
+    tools { nodejs "Default" }
+    stages{
+        stage("Prepare Environment"){
+            steps{
+                sh "node --version"
+                sh "npm install"
+            }
+        }
+        stage("Test Code"){
+            steps{
+                sh "npm run prodtest" 
+            }
+        }
+        stage("SonarCloud Report"){
+            steps{
+                echo "TODO"
+            }
+        }
+        stage("Build Code"){
+            steps{
+                sh "npm run build"
+            }
+        }
+        stage("Build Docker Image"){
+            when{
+                branch "master"
+            }
+            steps{
+                sh "docker image build -t rev-overflow-frontend:canada-latest ."
+            }
+        }
+        stage("Kill Old Container"){
+            when{
+                branch "master"
+            }
+            steps{
+                script{
+                    try{
+                        sh"docker stop \$(docker ps -a -q --filter \"name=rev-overflow-frontend\")"
+                        sh"docker rm \$(docker ps -a -q --filter \"name=rev-overflow-frontend\")"
+                    } 
+                    catch(e){
+                    } 
+                } 
+            }
+        }
+        stage("Run New Container"){
+            when{
+                branch "master"
+            }
+            steps{
+                sh "docker container run -p 80:80 -d --name=rev-overflow-frontend rev-overflow-frontend:canada-latest"
+            }
+        }
+    }
+    post{
+        always{
+           echo "this happens"
+        }
+        success{
+            echo "SUCCESS"
+        }
+        failure{
+            echo "FAILURE"
+        }
+    }
+} 

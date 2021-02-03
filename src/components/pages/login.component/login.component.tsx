@@ -11,6 +11,7 @@ import * as loginRemote from '../../../remotes/login.remote'
 import { useHistory } from 'react-router';
 import { useState } from 'react';
 import { authAxios } from "../../../remotes/internal.axios";
+import firebase from "firebase/app";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const LoginComponent: React.FC = () => {
   const classes = useStyles();
-
   const history = useHistory();
   const [inputEmail, setInputEmail] = useState('');
   const [inputPassword, setInputPassword] = useState('');
@@ -33,31 +33,40 @@ export const LoginComponent: React.FC = () => {
   useEffect(() => { }, []);
 
   let response: any;
-  const setInformation = async () => {
-    authAxios.defaults.headers["Authorization"]= response.headers.authorization
+  const setInformation = async (accessToken:any, email:any) => {
+    authAxios.defaults.headers["Authorization"]= accessToken;
+    await retrievePoints(email);
     setInputEmail('');
     setInputPassword('');
-    localStorage.setItem('accessToken', response.headers.authorization);
-    localStorage.setItem('admin', response.data.admin);
-    localStorage.setItem('email', response.data.email)
-    localStorage.setItem('firstName', response.data.firstName);
-    localStorage.setItem('lastName', response.data.lastName);
-    localStorage.setItem('points', response.data.points);
-    localStorage.setItem('profilePicture', response.data.profilePicture);
-    localStorage.setItem('rssaccountId', response.data.rssaccountId);
-    localStorage.setItem('userId', response.data.userID);
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('email', email)
     history.push('/feed')
+  }
+
+  const retrievePoints = async (email : any) => {
+
+    const response = authAxios.get(`/user/${email}/points`)
+    localStorage.setItem('points', (await response).data.points)
+    localStorage.setItem('admin', (await response).data.admin)
+
   }
 
   const addLoginCredentials = async (e: any) => {
     e.preventDefault()
-    const payload = {
-      email: inputEmail,
-      password: inputPassword
-    };
     try {
-      response = await loginRemote.checkLoginCredentials(payload);
-      await setInformation();
+
+       
+      const user = await firebase
+        .auth()
+        .signInWithEmailAndPassword(inputEmail, inputPassword)
+
+        console.log(user)
+
+      const accessToken = await firebase.auth().currentUser?.getIdToken(true)
+      const email = firebase.auth().currentUser?.email
+      
+      await setInformation(`Bearer ${accessToken}`, email);
+     
     } catch {
       alert('Incorrect username and/or password')
     }

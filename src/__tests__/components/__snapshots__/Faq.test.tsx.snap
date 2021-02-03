@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`USER-FAQ component tests Snapshot of render:  identifies unexpected interface changes within our application 1`] = `<main />`;

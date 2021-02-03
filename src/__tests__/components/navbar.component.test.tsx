@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavbarComponent } from '../../components/navbar.component';
 import { mount } from 'enzyme';
-import {Menu, IconButton} from '@material-ui/core'
+import {Menu, IconButton, ListItem} from '@material-ui/core'
 
 
 describe('navbar.component', () => {
@@ -28,4 +28,5 @@ describe('navbar.component', () => {
         expect(logoutMenu.prop('open')).toBeTruthy()
         expect(logoutMenu.prop('anchorEl')).toBeDefined()
     })
+
 });
