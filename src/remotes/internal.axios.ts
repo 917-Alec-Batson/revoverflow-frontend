@@ -11,5 +11,6 @@ export const authAxios = Axios.create({
     baseURL: server,
     headers: {
         Authorization: `${localStorage.getItem("accessToken")}`,
+        "Access-Control-Allow-Origin": `http://ec2-34-204-205-63.compute-1.amazonaws.com:80`
     },
 });
