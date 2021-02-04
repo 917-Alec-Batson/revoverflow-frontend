@@ -3,7 +3,7 @@
  * @author Keith Salzman 
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles, Box, Card, Backdrop, Button } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { Question } from '../../../models/question';
@@ -17,6 +17,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { AddFAQComponent } from '../faq-components/add-faq-component';
 import { deleteFAQuestion, updateFAQuestion } from '../../../remotes/faquestion.remote';
 import { Answer } from '../../../models/answer';
+import useForceUpdate from 'use-force-update';
 
 
 
@@ -57,7 +58,10 @@ export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
     const classes = useStyles();
     const history = useHistory();
     const [open, setOpen] = useState<boolean>(false);
+    const [updatebool, setupdatebool] = useState<boolean>(false);
 
+    //sorry this is janky good luck on your p3
+    useEffect(()=>{''},[updatebool])
 
     const openBackdrop = () => {
         setOpen(true);
@@ -76,6 +80,11 @@ export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
     } catch(e) {
         questionContent = EditorState.createEmpty();
         answerContent = EditorState.createEmpty();
+    }
+
+    const deleteFAQ = () => {
+        deleteFAQuestion(props.faqId)
+        setupdatebool(!updatebool)
     }
 
     const onChange = () => { };
@@ -106,7 +115,7 @@ export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
                                 <h3>{props.question.userId}</h3>
                                 <h4>Answer</h4>
                                 <div  style={{display:"flex", justifyContent:"center"}} className={classes.divInternal}> <Editor editorState={answerContent} readOnly={true} onChange={onChange} /></div>
-                                <Button onClick={()=>deleteFAQuestion(props.faqId)} >Delete</Button>
+                                <Button variant="outlined" onClick={deleteFAQ} >Delete</Button>
                              </Box>
                         </Box>
                     </Box>}

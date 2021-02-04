@@ -1,3 +1,4 @@
+import useForceUpdate from 'use-force-update';
 import { Answer } from '../models/answer';
 import { Faq } from '../models/faquestion';
 import { Location } from '../models/location';
@@ -48,11 +49,9 @@ export const getRevatureBasedFAQ = async() =>{
 
 //Get Revature based FAQs
 export const deleteFAQuestion = async(id: number) =>{
-
     const response = await authAxios.delete<Faq[]>(`/faq/${id}`);
     console.log(response.data);
     return response.data;
-
 
 }
 

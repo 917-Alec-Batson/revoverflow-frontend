@@ -36,6 +36,7 @@ import { AddFAQComponent } from "./add-faq-component";
 import { getRevatureBasedFAQ, getFAQByLocation, getAllFAQ } from "../../../remotes/faquestion.remote";
 import { Faq } from "../../../models/faquestion";
 import { FaqBoxComponent } from "./faq-box.component";
+import { LensTwoTone } from "@material-ui/icons";
 
 const theme = createMuiTheme({
   palette: {
@@ -97,6 +98,7 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
   const [value, setValue] = useState(props.storeTab);
   const [open, setOpen] = useState<boolean>(false);
   const [faqTodisplay, setFAQs] = useState<Array<Faq>>();
+  const [allFAQs, setAllFAQs] = useState<Array<Faq>>();
   const userId = +JSON.parse(JSON.stringify(localStorage.getItem("userId")));
   const admin = localStorage.getItem("admin");
   const size = 10;
@@ -108,7 +110,37 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
 
   const handleBreadcrumbChange = async (name:any) => {
     let faq = await getFAQByLocation(name)
-    setFAQs(faq || [])
+    let locationId:number;
+    if(name == "AllLocations"){
+      locationId = 1
+    }
+    if(name == "Reston"){
+      locationId = 2
+    }
+    if(name == "Toronto"){
+      locationId = 3
+    }
+    if(name == "Tampa"){
+      locationId = 4
+    }
+    if(name == "NewYork"){
+      locationId = 5
+    }
+    if(name == "Dallas"){
+      locationId=6
+    }
+    if(name == "Orlando"){
+      locationId = 7
+    }
+    if(name == "Morgantown"){
+      locationId = 8
+    }
+    setFAQs(allFAQs?.filter((faq)=>{
+      return (faq.question.locationID  === locationId)
+    }))
+    // setFAQs(faq || [])
+    console.log("all faqs is after locatiion filter")
+    console.log(allFAQs)
 
   }
 
@@ -125,11 +157,17 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
 
   useEffect(() => {
     load(view, 1);
+    const getFAQs = async () =>{
+      try{
+        let results = await getAllFAQ()
+        setAllFAQs(results)
+      }catch(e){
+        
+      }
+    }
+    getFAQs()
   }, [view, open]);
 
-  // useEffect(() => {
-  //   load(view, 1);
-  // }, [open]);
 
 
   /**
@@ -138,25 +176,27 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
    * @param page number variable that describes which page to display form the paginated information recieved from the server
    */
   const load = async (currentView: string, page: number) => {
-    let retrievedPageable: any;
     let tab: any;
     
     if (currentView === "all") {
-      retrievedPageable = await getAllFAQ();
-      console.log(retrievedPageable)
+      console.log("all")
       tab = 0;
-      if (retrievedPageable.numberOfElements === 0) {
-        setFAQs(retrievedPageable)
+      setFAQs(allFAQs)
+      if (allFAQs?.length === 0) {
+        setFAQs(allFAQs)
         return;
       }
     } 
     else if (currentView === "revature") {
-      retrievedPageable = await getRevatureBasedFAQ();
+      setFAQs(allFAQs?.filter((faq)=>{
+        return faq.question.revatureQuestion === true
+      }))
       tab = 1;
     }else if (currentView === "location") {
       tab = 2;
     }
-    setFAQs(retrievedPageable)
+    console.log("all faqs is")
+    console.log(allFAQs)
   };
 
   const openBackdrop = () => {

@@ -84,15 +84,15 @@ export const CustomizedBreadcrumbs:React.FC<IBreadCrumbComponentProps> = (props)
     <ThemeProvider theme={theme} > 
       <Breadcrumbs separator="|" className={classes.parentCrumb} aria-label="breadcrumb">
             
-      <StyledBreadcrumb
+      {/* <StyledBreadcrumb
             className={classes.babyCrumb}
             component="a"
-            href="#All Locations"
-            label="All Locations"
+            href="#AllLocations"
+            label="AllLocations"
             icon={<AllLocationsIcon />}
             onClick={handleClick}
           />
-          
+           */}
           <StyledBreadcrumb
             className={classes.babyCrumb}
             component="a"
@@ -120,7 +120,7 @@ export const CustomizedBreadcrumbs:React.FC<IBreadCrumbComponentProps> = (props)
         />
         <StyledBreadcrumb
         className={classes.babyCrumb}
-          label="New York"
+          label="NewYork"
           deleteIcon={<ExpandMoreIcon />}
           icon={<Ny />}
           onClick={handleClick}

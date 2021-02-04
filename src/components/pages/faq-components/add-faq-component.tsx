@@ -157,7 +157,7 @@ export const AddFAQComponent: React.FC<AddFAQComponentProps> = (props) => {
     // if (!defaultQuestionProvided) {
     try {
       let q: Question = {
-        id:  props.defaultQuestion.id || 0,
+        id: 0,
         acceptedId: 0,
         title: questionTitle,
         content: questionBody,
@@ -169,7 +169,7 @@ export const AddFAQComponent: React.FC<AddFAQComponentProps> = (props) => {
       };
 
       let a: Answer = {
-        id: props.defaultAnswer.id ||0,
+        id: 0,
         content: answer,
         creationDate: new Date(),
         questionId: 0,

@@ -40,7 +40,7 @@ export const Morgan = ()=>{
 export const Ny = ()=>{
 
     return(
-            <img style={style.icons} alt="New York" src="./icons/NYC.png"/>
+            <img style={style.icons} alt="NewYork" src="./icons/NYC.png"/>
     )   
 }
 export const Orlando = ()=>{
