@@ -75,6 +75,7 @@ export interface RichTextBoxComponentProps {
   placeholder?: string;
   handleChange: (e: any) => void;
   showButtons?:boolean
+  update?:boolean
 }
 
 export const RichTextBoxComponent: React.FC<RichTextBoxComponentProps> = (
@@ -305,7 +306,7 @@ const linkbutton = [{ function: onAddLink, name: <HttpIcon /> }]
           placeholder={props.placeholder}
           handleKeyCommand={handleKeyCommand}
           onChange={onChange}
-          readOnly={props.defaultText ? true : false}
+          readOnly={props.defaultText ? !props.update : false}
         />
       </Box>
     </ThemeProvider>

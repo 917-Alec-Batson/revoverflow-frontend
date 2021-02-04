@@ -9,7 +9,7 @@ import { Question } from "./question";
 
 
 export interface Faq{
-    userId:number,
+    id :number,
     question: Question,
     answer: Answer
 }

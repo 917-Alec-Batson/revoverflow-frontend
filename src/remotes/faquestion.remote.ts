@@ -44,3 +44,29 @@ export const getRevatureBasedFAQ = async() =>{
 
 
 }
+
+
+//Get Revature based FAQs
+export const deleteFAQuestion = async(id: number) =>{
+
+    const response = await authAxios.delete<Faq[]>(`/faq/${id}`);
+    console.log(response.data);
+    return response.data;
+
+
+}
+
+//Get Revature based FAQs
+export const updateFAQuestion = async (question: Question, answer: Answer, id:number) => {
+
+    let addFAQ ={
+            id,
+          question,
+          answer,
+      }
+    const response = await authAxios.put<Faq>(`/faq`, addFAQ);
+    console.log(response.data);
+    return response.data;
+
+
+}

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Answer } from "../../../models/answer";
 import { Question } from "../../../models/question";
 import {Location} from "../../../models/location"
-import { addToFAQ, getAllFAQ } from "../../../remotes/faquestion.remote";
+import { addToFAQ, getAllFAQ, updateFAQuestion } from "../../../remotes/faquestion.remote";
 import { getLocations } from "../../../remotes/location.remote";
 import { RichTextBoxComponent } from "../../rich-text-box-component";
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
@@ -74,6 +74,8 @@ const useStyles = makeStyles({
 //pass in if there is no default question
 export interface AddFAQComponentProps {
   defaultQuestion?: any;
+  defaultAnswer?: any;
+  faqId?: number;
   onSubmit:() => void;
 }
 
@@ -155,7 +157,7 @@ export const AddFAQComponent: React.FC<AddFAQComponentProps> = (props) => {
     // if (!defaultQuestionProvided) {
     try {
       let q: Question = {
-        id: 0,
+        id:  props.defaultQuestion.id || 0,
         acceptedId: 0,
         title: questionTitle,
         content: questionBody,
@@ -167,21 +169,26 @@ export const AddFAQComponent: React.FC<AddFAQComponentProps> = (props) => {
       };
 
       let a: Answer = {
-        id: 0,
+        id: props.defaultAnswer.id ||0,
         content: answer,
         creationDate: new Date(),
         questionId: 0,
         userId: JSON.parse(localStorage.getItem("userId")!),
       };
+
       // console.log(convertFromRaw(JSON.parse(q.content)).getPlainText())
       // This prevents users from submitting empty text boxes
-      if(questionTitle && questionBody && answer) {
-        let submitToFAQ;
+          let submitToFAQ;
+          if(props.defaultAnswer && props.defaultQuestion?true:false){
+            submitToFAQ = await updateFAQuestion(q, a, props.faqId ||  0)
+          }
+      else if(questionTitle && questionBody && answer) {
         try{
-          if(convertFromRaw(JSON.parse(questionBody)).getPlainText() && convertFromRaw(JSON.parse(answer)).getPlainText())
-          submitToFAQ = await addToFAQ(q, a);
+          if(convertFromRaw(JSON.parse(questionBody)).getPlainText() && convertFromRaw(JSON.parse(answer)).getPlainText()){
+          submitToFAQ = await addToFAQ(q, a)
           console.log(submitToFAQ);
           props.onSubmit()
+          }
         }
         catch(e){
           console.log(e)
@@ -204,6 +211,7 @@ export const AddFAQComponent: React.FC<AddFAQComponentProps> = (props) => {
             id="questionTitleInput"
             handleChange={handleQuestionTitleChange}
             placeholder={"Write a descriptive title"}
+            update={props.defaultQuestion||props.defaultAnswer}
           />
         </div>
 
@@ -214,15 +222,18 @@ export const AddFAQComponent: React.FC<AddFAQComponentProps> = (props) => {
             placeholder={"Describe your question here"}
             id="questionBodyInput"
             handleChange={handleQuestionBodyChange}
+            update={props.defaultQuestion||props.defaultAnswer}
           />
         </div>
         <div className={classes.cardBoxes3}>
           <p className={classes.label}>ANSWER</p>
 
           <RichTextBoxComponent
+            defaultText={props.defaultAnswer?.content}
             id="answerInput"
             handleChange={handleAnswerChange}
             placeholder={"Answer"}
+            update={props.defaultQuestion||props.defaultAnswer}
           />
         </div>
           

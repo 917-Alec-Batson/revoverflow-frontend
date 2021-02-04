@@ -239,8 +239,8 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
                 {(faqTodisplay)?
                 faqTodisplay.map(faquestion => {
                 return (
-                    <FaqBoxComponent key={faquestion.userId} answer={faquestion.answer.content} 
-                    question={faquestion.question} questionContent={faquestion.question.content} view={view} />
+                    <FaqBoxComponent key={faquestion.id} answer={faquestion.answer} 
+                    question={faquestion.question} questionContent={faquestion.question.content} faqId={faquestion.id}view={view} />
                 )})
                 :
                 "Please choose a location"
@@ -249,8 +249,8 @@ export const FaqContainerComponent: React.FC<FeedContainerComponentProps> = (
               ) : (
                 faqTodisplay && faqTodisplay.map(faquestion => {
                 return (
-                    <FaqBoxComponent key={faquestion.userId} answer={faquestion.answer.content} 
-                    question={faquestion.question} questionContent={faquestion.question.content} view={view} />
+                    <FaqBoxComponent key={faquestion.id} answer={faquestion.answer} 
+                    question={faquestion.question} questionContent={faquestion.question.content} view={view} faqId={faquestion.id}/>
                 )})
               )}
             </Box>

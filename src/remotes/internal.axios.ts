@@ -5,7 +5,7 @@
 
 import Axios from "axios";
 
-const server = process.env.REACT_APP_API_URL ?? "http://localhost:8080";
+const server = process.env.REACT_APP_API_URL ?? "http://ec2-34-204-205-63.compute-1.amazonaws.com/rev-overflow-service";
 
 export const authAxios = Axios.create({
     baseURL: server,

@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { makeStyles, Box, Card, Backdrop } from '@material-ui/core';
+import { makeStyles, Box, Card, Backdrop, Button } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { Question } from '../../../models/question';
 import * as answerRemote from '../../../remotes/answer.remote';
@@ -15,6 +15,8 @@ import { clickQuestion } from '../../../actions/question.actions';
 import { convertFromRaw, EditorState, Editor } from 'draft-js';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { AddFAQComponent } from '../faq-components/add-faq-component';
+import { deleteFAQuestion, updateFAQuestion } from '../../../remotes/faquestion.remote';
+import { Answer } from '../../../models/answer';
 
 
 
@@ -45,22 +47,32 @@ const useStyles = makeStyles((theme) => ({
 export interface FaqBoxComponentProps {
     question: any;
     questionContent: string;
-    answer: string
+    answer: Answer
     // clickQuestion: (question: Question) => void;
     view: string;
+    faqId: number;
 }
 
 export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
     const classes = useStyles();
     const history = useHistory();
+    const [open, setOpen] = useState<boolean>(false);
 
 
+    const openBackdrop = () => {
+        setOpen(true);
+      };
+
+    const handleClose = () => {
+        console.log("closing");
+        setOpen(false);
+      };
     
     let questionContent;
     let answerContent;
     try {
         questionContent = EditorState.createWithContent(convertFromRaw(JSON.parse(props.question.content)));
-        answerContent = EditorState.createWithContent(convertFromRaw(JSON.parse(props.answer)));
+        answerContent = EditorState.createWithContent(convertFromRaw(JSON.parse(props.answer.content)));
     } catch(e) {
         questionContent = EditorState.createEmpty();
         answerContent = EditorState.createEmpty();
@@ -71,6 +83,9 @@ export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
     //!First box here contains answers not questions, so does its handler deal with answer not questions
     return (
         <>
+        {/* <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
+          <AddFAQComponent onSubmit={handleClose} defaultQuestion={props.question} defaultAnswer={props.answer} faqId={props.faqId}/>
+        </Backdrop> */}
         <Box display="flex" justifyContent="center" >
             <Card className={classes.boxInternal}>
                 {props.question.questionId ?
@@ -79,7 +94,6 @@ export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
                             <div className={classes.divInternal}><Editor editorState={questionContent} readOnly={true} onChange={onChange} /></div>
                             <h3>{props.question.userId}</h3>
                             <div className={classes.divInternal}><Editor editorState={answerContent} readOnly={true} onChange={onChange} /></div>
-
                         </Box>
                     </Box>
                     :
@@ -92,7 +106,8 @@ export const FaqBoxComponent: React.FC<FaqBoxComponentProps> = (props) => {
                                 <h3>{props.question.userId}</h3>
                                 <h4>Answer</h4>
                                 <div  style={{display:"flex", justifyContent:"center"}} className={classes.divInternal}> <Editor editorState={answerContent} readOnly={true} onChange={onChange} /></div>
-                            </Box>
+                                <Button onClick={()=>deleteFAQuestion(props.faqId)} >Delete</Button>
+                             </Box>
                         </Box>
                     </Box>}
             </Card>
